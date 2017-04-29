@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph Background="#333333" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes>
+    <Node Id="node-1" Label="Heat Water" Category="Neutral"></Node>
+    <Node Id="node-2" Label="Determine Temperature" Category="Neutral"></Node>
+    <Node Id="node-3" Label="MeltIce" Category="Neutral"></Node>
+    <Node Id="node-4" Label="Add Coffee and Sugar" Category="Neutral"></Node>
+    <Node Id="node-5" Label="Mix Ingredients Fork" Category="Neutral"></Node>
+    <Node Id="node-6" Label="Add Milk" Category="Neutral"></Node>
+    <Node Id="node-7" Label="Stir Mug" Category="Neutral"></Node>
+    <Node Id="node-8" Label="DrinkCoffee" Category="Neutral"></Node>
+    <Node Id="node-9" Label="GetFireExtinguisher" Category="Neutral"></Node>
+  </Nodes>
+  <Links>
+    <Link Source="node-1" Target="node-2" Category="Neutral" Label="Direct"></Link>
+    <Link Source="node-2" Target="node-3" Category="Neutral" Label="Temperature &lt;= 0 degrees"></Link>
+    <Link Source="node-2" Target="node-1" Category="Neutral" Label="Temperature &gt; 0 &amp; Temperature &lt; 100 degrees"></Link>
+    <Link Source="node-2" Target="node-4" Category="Neutral" Label="Temperature &gt; 100 &amp; Temperature &lt; 160 degrees"></Link>
+    <Link Source="node-2" Target="node-9" Category="Neutral" Label="Temperature &gt;= 160 degrees"></Link>
+    <Link Source="node-3" Target="node-2" Category="Neutral" Label="Direct"></Link>
+    <Link Source="node-4" Target="node-5" Category="Neutral" Label="Direct"></Link>
+    <Link Source="node-5" Target="node-6" Category="Neutral" Label="Parallel"></Link>
+    <Link Source="node-5" Target="node-7" Category="Neutral" Label="Parallel"></Link>
+    <Link Source="node-6" Target="node-8" Category="Neutral" Label="Direct"></Link>
+    <Link Source="node-7" Target="node-8" Category="Neutral" Label="Direct"></Link>
+    <Link Source="node-9" Target="node-2" Category="Neutral" Label="Direct"></Link>
+  </Links>
+  <Categories>
+    <Category Id="Neutral" Background="#FFDDDDDD" Stroke="#FFDDDDDD"></Category>
+  </Categories>
+</DirectedGraph>

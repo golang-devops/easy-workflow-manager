@@ -1,7 +1,7 @@
 package attempt3
 
 type Activity interface {
-	Node
+	Task
 
-	Execute() error
+	Next() Node
 }

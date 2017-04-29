@@ -6,51 +6,144 @@ import (
 )
 
 type validateCheckConnectionVisitor struct {
-	workflow  *Workflow
-	nodeError error
+	workflow       *Workflow
+	processedNodes []Node
+	nodeError      *NodeError
 }
 
 func (v *validateCheckConnectionVisitor) Validate() error {
 	v.nodeError = nil
-	for _, node := range v.workflow.nodes {
-		node.Accept(v)
-		if v.nodeError != nil {
-			return fmt.Errorf("Node '%s', %s", node.Name(), v.nodeError.Error())
-		}
+
+	v.workflow.initialNode.Accept(v)
+	if v.nodeError != nil {
+		return fmt.Errorf("Node '%s', %s", v.nodeError.Node.Name(), v.nodeError.Error.Error())
 	}
+
 	return nil
 }
+func (v *validateCheckConnectionVisitor) isAlreadyProcessed(node Node) bool {
+	for _, n := range v.processedNodes {
+		if n == node {
+			return true
+		}
+	}
+	return false
+}
+func (v *validateCheckConnectionVisitor) VisitTask(node Task) {
+	if v.isAlreadyProcessed(node) {
+		return
+	}
+	v.processedNodes = append(v.processedNodes, node)
+}
 func (v *validateCheckConnectionVisitor) VisitActivity(node Activity) {
+	if v.isAlreadyProcessed(node) {
+		return
+	}
+	v.processedNodes = append(v.processedNodes, node)
+
+	if node.Next() != nil {
+		node.Next().Accept(v)
+		if v.nodeError != nil {
+			return
+		}
+	}
 }
 func (v *validateCheckConnectionVisitor) VisitCondition(node Condition) {
+	if v.isAlreadyProcessed(node) {
+		return
+	}
+	v.processedNodes = append(v.processedNodes, node)
+
 	if node.ConditionAnswerProvider() == nil {
-		v.nodeError = errors.New("ConditionAnswerProvider is not set")
+		v.nodeError = &NodeError{
+			Node:  node,
+			Error: errors.New("ConditionAnswerProvider is not set"),
+		}
 		return
 	}
 
 	if node.WhenTrue() == nil {
-		v.nodeError = errors.New("WhenTrue is not set")
+		v.nodeError = &NodeError{
+			Node:  node,
+			Error: errors.New("WhenTrue is not set"),
+		}
 		return
 	}
 
 	if node.WhenFalse() == nil {
-		v.nodeError = errors.New("WhenFalse is not set")
-		return
-	}
-}
-func (v *validateCheckConnectionVisitor) VisitSwitch(node Switch) {
-	if node.SwitchAnswerProvider() == nil {
-		v.nodeError = errors.New("SwitchAnswerProvider is not set")
+		v.nodeError = &NodeError{
+			Node:  node,
+			Error: errors.New("WhenFalse is not set"),
+		}
 		return
 	}
 
-	uniqueMap := map[Node]interface{}{}
-	for _, c := range node.SwitchAnswerProvider().AllCases() {
-		if _, alreadyFound := uniqueMap[c]; alreadyFound {
-			v.nodeError = fmt.Errorf("Duplicate case '%s'", c.Name())
+	for _, child := range []Node{node.WhenTrue(), node.WhenFalse()} {
+		child.Accept(v)
+		if v.nodeError != nil {
 			return
 		}
-		uniqueMap[c] = nil
 	}
 }
-func (v *validateCheckConnectionVisitor) VisitParallelFork(node ParallelFork) {}
+func (v *validateCheckConnectionVisitor) VisitSwitch(node Switch) {
+	if v.isAlreadyProcessed(node) {
+		return
+	}
+	v.processedNodes = append(v.processedNodes, node)
+
+	if len(node.Cases()) == 0 {
+		v.nodeError = &NodeError{
+			Node:  node,
+			Error: errors.New("No Cases are specified"),
+		}
+		return
+	}
+
+	uniqueNodes := map[Node]interface{}{}
+	for _, switchCase := range node.Cases() {
+		if _, alreadyFound := uniqueNodes[switchCase.Node]; alreadyFound {
+			v.nodeError = &NodeError{
+				Node:  node,
+				Error: fmt.Errorf("Duplicate case '%s'", switchCase.Node.Name()),
+			}
+			return
+		}
+		uniqueNodes[switchCase.Node] = nil
+	}
+
+	for _, child := range node.Cases() {
+		child.Node.Accept(v)
+		if v.nodeError != nil {
+			return
+		}
+	}
+}
+func (v *validateCheckConnectionVisitor) VisitParallelFork(node ParallelFork) {
+	if v.isAlreadyProcessed(node) {
+		return
+	}
+	v.processedNodes = append(v.processedNodes, node)
+
+	if node.Next() != nil {
+		nextNode := node.Next()
+		nextNode.Accept(v)
+		if v.nodeError != nil {
+			return
+		}
+	}
+
+	if len(node.Legs()) == 0 {
+		v.nodeError = &NodeError{
+			Node:  node,
+			Error: errors.New("No Legs are specified"),
+		}
+		return
+	}
+
+	for _, child := range node.Legs() {
+		child.Accept(v)
+		if v.nodeError != nil {
+			return
+		}
+	}
+}

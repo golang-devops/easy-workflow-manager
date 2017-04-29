@@ -3,10 +3,11 @@ package attempt3
 type Switch interface {
 	Node
 
-	SwitchAnswerProvider() SwitchAnswerProvider
+	Cases() []*SwitchCase
 }
 
-type SwitchAnswerProvider interface {
-	AllCases() []Node
-	SwitchAnswer() Node
+type SwitchCase struct {
+	Predicate func() bool
+	Name      string
+	Node      Node
 }
