@@ -1,4 +1,4 @@
-package types
+package attempt2
 
 type Tree struct {
 	self Node

@@ -1,4 +1,4 @@
-package elements
+package attempt1
 
 type Event struct{}
 type StartEvent struct{ Event }

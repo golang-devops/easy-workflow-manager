@@ -1,4 +1,4 @@
-package types
+package attempt2
 
 type WorkflowResult struct {
 	Error             error

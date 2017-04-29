@@ -1,4 +1,4 @@
-package elements
+package attempt1
 
 type Connection struct{}
 type SequenceFlowConnection struct{ Connection }

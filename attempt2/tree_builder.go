@@ -1,4 +1,4 @@
-package types
+package attempt2
 
 type TreeBuilder interface {
 	Build() (*Tree, error)

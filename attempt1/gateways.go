@@ -1,4 +1,4 @@
-package elements
+package attempt1
 
 type Gateway struct{}
 type ExclusiveGateway struct{ Gateway }
