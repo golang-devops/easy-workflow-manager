@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/golang-devops/easy-workflow-manager/attempt2"
 	"github.com/golang-devops/easy-workflow-manager/attempt3/example"
 )
 
@@ -24,15 +23,6 @@ func (s *sharedData) Get(name string) (interface{}, error) {
 	return val, nil
 }
 
-func tmpAttempt2() {
-	sd := &sharedData{}
-	workflowTree := &attempt2.Tree{}
-
-	sd = sd
-	workflowTree = workflowTree
-	// attempt2.NewWorkflowExecutor(workflowTree, sd)
-}
-
 func tmpAttempt3() {
 	if err := example.ExecuteWorkflowExample(); err != nil {
 		log.Fatal(err)
@@ -40,6 +30,5 @@ func tmpAttempt3() {
 }
 
 func main() {
-	tmpAttempt2()
 	tmpAttempt3()
 }
