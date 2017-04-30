@@ -113,11 +113,15 @@ func (w *Workflow) Execute() error {
 
 	currentNode := w.initialNode
 	for {
+		w.eventHandler.Info(fmt.Sprintf("Executing: %s", currentNode.Name()))
+
 		executeAndNext := &executeAndGetNextNodeVisitor{}
 		currentNode.Accept(executeAndNext)
 		if executeAndNext.executeErr != nil {
+			w.eventHandler.Error(fmt.Sprintf("Failed to Execute: %s. Error: %s", currentNode.Name(), executeAndNext.executeErr.Error()))
 			return executeAndNext.executeErr
 		}
+		w.eventHandler.Info(fmt.Sprintf("Successfully Executed: %s", currentNode.Name()))
 
 		w.executedNodes = append(w.executedNodes, currentNode)
 		w.executedNodes = append(w.executedNodes, executeAndNext.subNodesExecuted...)
