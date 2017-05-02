@@ -1,12 +1,15 @@
 package coffee
 
 import (
+	"github.com/golang-devops/easy-workflow-manager/logging"
 	"github.com/golang-devops/easy-workflow-manager/types"
 )
 
 func ExecuteWorkflowExample() error {
+	logging.InitLogger()
+
 	var (
-		eventHandler = &EventHandler{}
+		eventHandler = logging.GetLogger()
 
 		heatWater = &HeatWaterActivity{
 			eventHandler: eventHandler,

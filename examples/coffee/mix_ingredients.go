@@ -3,11 +3,12 @@ package coffee
 import (
 	"time"
 
+	"github.com/golang-devops/easy-workflow-manager/logging"
 	"github.com/golang-devops/easy-workflow-manager/types"
 )
 
 type MixIngredientsFork struct {
-	eventHandler *EventHandler
+	eventHandler logging.Logger
 	legs         []types.Task
 	nextNode     types.Node
 }
@@ -29,7 +30,7 @@ func (m *MixIngredientsFork) Next() types.Node {
 }
 
 type AddMilk struct {
-	eventHandler *EventHandler
+	eventHandler logging.Logger
 }
 
 func (a *AddMilk) Name() string {
@@ -48,7 +49,7 @@ func (a *AddMilk) Execute() error {
 }
 
 type StirMug struct {
-	eventHandler *EventHandler
+	eventHandler logging.Logger
 }
 
 func (s *StirMug) Name() string {

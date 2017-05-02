@@ -5,10 +5,11 @@ import (
 	"time"
 
 	"github.com/golang-devops/easy-workflow-manager/types"
+	"github.com/golang-devops/easy-workflow-manager/logging"
 )
 
 type HeatWaterActivity struct {
-	eventHandler     *EventHandler
+	eventHandler     logging.Logger
 	nextNode         types.Node
 	waterTemperature int
 }

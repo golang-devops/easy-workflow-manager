@@ -2,10 +2,11 @@ package coffee
 
 import (
 	"github.com/golang-devops/easy-workflow-manager/types"
+	"github.com/golang-devops/easy-workflow-manager/logging"
 )
 
 type GetFireExtinguisher struct {
-	eventHandler *EventHandler
+	eventHandler logging.Logger
 	nextNode     types.Node
 }
 

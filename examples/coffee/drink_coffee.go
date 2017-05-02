@@ -4,10 +4,11 @@ import (
 	"time"
 
 	"github.com/golang-devops/easy-workflow-manager/types"
+	"github.com/golang-devops/easy-workflow-manager/logging"
 )
 
 type DrinkCoffee struct {
-	eventHandler *EventHandler
+	eventHandler logging.Logger
 }
 
 func (d *DrinkCoffee) Name() string {
