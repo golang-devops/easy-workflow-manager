@@ -1,4 +1,4 @@
-package example
+package coffee
 
 import (
 	"github.com/golang-devops/easy-workflow-manager/attempt3"

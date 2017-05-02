@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/golang-devops/easy-workflow-manager/attempt3/example"
+	"github.com/golang-devops/easy-workflow-manager/attempt3/examples/coffee"
 )
 
 type sharedData struct {
@@ -24,7 +24,7 @@ func (s *sharedData) Get(name string) (interface{}, error) {
 }
 
 func tmpAttempt3() {
-	if err := example.ExecuteWorkflowExample(); err != nil {
+	if err := coffee.ExecuteWorkflowExample(); err != nil {
 		log.Fatal(err)
 	}
 }
